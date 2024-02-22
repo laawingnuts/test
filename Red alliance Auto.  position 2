@@ -1,0 +1,62 @@
+
+@Autonomous(name="Robot: Auto Drive By Time", group="Robot")
+//@Disabled
+public class RedAuto extends LinearOpMode {
+
+    /* Declare OpMode members. */
+    private DcMotor         leftDrive   = null;
+    private DcMotor         rightDrive  = null;
+    private DcMotor         backleftDrive = null;
+    private DcMotor         backrightDrive   = null;
+    private ElapsedTime     runtime = new ElapsedTime();
+
+
+    static final double     FORWARD_SPEED = 0.6;
+    static final double     TURN_SPEED    = 0.5;
+
+    @Override
+    public void runOpMode() {
+
+        // Initialize the drive system variables.
+        leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
+        rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+        backleftDrive = hardwareMap.get(DcMotor.class, "BackLeft_drive");
+        backrightDrive = hardwareMap.get(DcMotor.class, "Backright_drive");
+
+
+        leftDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightDrive.setDirection(DcMotor.Direction.FORWARD);
+        backrightDrive.setDirection(DcMotor.Direction.REVERSE);
+        backleftDrive.setDirection(DcMotor.Direction.REVERSE);
+
+        telemetry.addData("Status", "Ready to run");    //
+        telemetry.update();
+
+        waitForStart();
+
+
+        leftDrive.setPower(FORWARD_SPEED);
+        rightDrive.setPower(FORWARD_SPEED);
+        backrightDrive.setPower(-FORWARD_SPEED);
+        backleftDrive.setPower(-FORWARD_SPEED);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < 3.5)) {
+            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+
+        }
+
+        // Step 3:  Stop
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
+        backrightDrive.setPower(0);
+        backleftDrive.setPower(0);
+
+        telemetry.addData("Path", "Complete");
+        telemetry.update();
+        sleep(1000);
+    }
+}
+
+
+
